@@ -1,0 +1,88 @@
+<html>
+    <head>
+		<style>
+			.circle { width: 1px; height: 1px; border-radius: 50%; position: absolute; top: 0; left: 0; transition: all 300ms ease-in-out; cursor: pointer; background: white; }
+			#color_name { text-align: center; font-family: cursive; font-size: 54px; font-weight: bold; }
+		</style>
+    </head>
+    
+	<body>
+		<div id="container">
+			<p id="color_name"></p>
+		</div>
+        <script type='text/javascript'>
+		
+			const MAX_SIZE = 350;
+			prevColor = -1;
+			
+			addNewCircle();
+		
+			function addNewCircle() {
+				removeCircle();
+				const size = getRandomNum(MAX_SIZE, 200);
+				const wwidth = window.innerWidth - size;
+				const wheight= window.innerHeight - size;
+				const colorInfo = getRandomColor();
+				setText(colorInfo[0], colorInfo[1]);
+				createCircle(getRandomNum(wwidth, size / 2), getRandomNum(wheight, size / 2 + 100), size, size, colorInfo[0]);
+			}
+			
+			function setText(color, text) {
+				const textElement = document.getElementById('color_name');
+				textElement.innerHTML = text;
+				textElement.style.color = color;
+			}
+		
+			function createCircle(x, y, w, h, c) {
+				const circle = document.createElement('div');
+				circle.style.left = x;
+				circle.style.top = y;
+				circle.classList.add('circle');
+				circle.onclick = () => addNewCircle();
+				setTimeout(() => {
+					circle.style.width = w;
+					circle.style.height = h;
+					circle.style.left = x - w/2;
+					circle.style.top = y - h/2;
+					circle.style.background = c;
+				});
+				const container = document.getElementById('container');
+				container.appendChild(circle);
+			}
+			
+			function removeCircle() {
+			    if (document.getElementsByClassName('circle').length) {
+					const circle = document.getElementsByClassName('circle')[0];
+					circle.style.left = convertPxToNum(circle.style.left) + convertPxToNum(circle.style.width) / 2;
+					circle.style.top = convertPxToNum(circle.style.top) + convertPxToNum(circle.style.height) / 2;
+					circle.style.width = '1px';
+					circle.style.height = '1px';
+					circle.style.background = 'white';
+					setTimeout(() => {
+						circle.remove();
+					}, 200);
+				}
+			}
+			
+			function getRandomNum(base, min) {
+				return Math.max(Math.random() * base | 0, min);
+			}
+			
+			function getRandomColor() {
+				const colorText = ['Sárga',   'Kék',          'Piros',   'Zöld',        'Rózsaszín', 'Narancssárga', 'Fekete'];
+				const colors =    ['#ffe760', 'lightskyblue', '#f66a6a', 'yellowgreen', '#fd84a3',   '#ffb947',      'black'];
+				let random = prevColor;
+				while (prevColor == random) {
+					random = Math.random() * colors.length | 0;
+				}
+				prevColor = random;
+				return [colors[random], colorText[random]];
+			}
+			
+			function convertPxToNum(px) {
+				return px.replace('px', '') | 0;
+			}
+			
+        </script>
+    </body>
+</html>
